@@ -11,6 +11,7 @@ import Home from './components/Home/Home';
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import RegisterRBS from './components/RegisterRBS/RegisterRBS';
+import RegisterBS from './components/RegisterBS/RegisterBS';
 
 
 const router = createBrowserRouter([
@@ -31,8 +32,12 @@ const router = createBrowserRouter([
         element: <Register></Register>
       },
       {
-        path: 'registerRbs',
+        path: '/registerRbs',
         element: <RegisterRBS></RegisterRBS>
+      },
+      {
+        path: '/registerBs',
+        element: <RegisterBS></RegisterBS>
       },
     ]
   },

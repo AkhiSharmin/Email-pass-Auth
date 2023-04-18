@@ -1,7 +1,8 @@
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import app from '../../firebase/firebase.config';
 import { Link } from 'react-router-dom';
+import { useRef } from 'react';
 
 const auth = getAuth(app)
 
@@ -9,6 +10,7 @@ const Login = () => {
 
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const emailRef = useRef();
 
     const handelLogin = event => {
         event.preventDefault()
@@ -50,13 +52,32 @@ const Login = () => {
 
     }
 
+
+    const handelResetPassword = event => {
+        const email = emailRef.current.value;
+        if(!email){
+            alert('Please provide your email address to reset password')
+            return;
+        }
+        sendPasswordResetEmail(auth, email)
+        .then(() => {
+            alert('Please check your email');
+        })
+        .catch(error => {
+            console.log(error)
+            setError(error.message)
+        })
+    }
+
+
+
     return (
         <div className='w-25 mx-auto'>
             <h2>Please Login</h2>
         <form onSubmit={handelLogin}>
             <div className="form-group mb-3">
                 <label htmlFor="email">Email address</label>
-                <input type="email" name='email' className="form-control" id="email" placeholder="Enter email"  required/>
+                <input type="email" ref={emailRef} name='email' className="form-control" id="email" placeholder="Enter email"  required/>
             </div>
             <div className="form-group mb-3">
                 <label htmlFor="password">Password</label>
@@ -69,7 +90,7 @@ const Login = () => {
             <button type="submit" className="btn btn-primary">Submit</button>
       </form>
       <p><small>Forget Password? Please 
-        <button className='btn btn-link'>Reset Password</button></small></p>
+        <button onClick={handelResetPassword} className='btn btn-link'>Reset Password</button></small></p>
       <p><small>New to Website? Please <Link to='/register'>Register</Link></small></p>
       <p className='text-danger'>{error}</p>
       <p className='text-success'>{success}</p>

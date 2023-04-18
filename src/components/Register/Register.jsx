@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, updateProfile } from "firebase/auth";
 import app from '../../firebase/firebase.config';
 import { Link } from 'react-router-dom';
 
@@ -19,7 +19,8 @@ const Register = () => {
         //2.collect form data
         const email = event.target.email.value;
         const password = event.target.password.value;
-        console.log(email,password)
+        const name = event.target.name.value;
+        console.log(name, email,password)
 
         //validate
         if(!/(?=.*[A-Z].*[A-Z])/.test(password)){
@@ -45,6 +46,7 @@ const Register = () => {
             event.target.reset();
             setSuccess('User has been created successfully');
             sendVerificationEmail(result.user);
+            updateUserData(result.user, name)
         })
         .catch(error =>{
             console.error(error.message)
@@ -69,10 +71,25 @@ const Register = () => {
         })
     }
 
+    const updateUserData = (user, name) => {
+        updateProfile(user, {
+            displayName: name
+        })
+        .then(() =>{
+            console.log('User name Update')
+        })
+        .catch(error => {
+            setError(error.message)
+        })
+    }
+
+
     return (
         <div className='w-50 mx-auto'>
             <h4>Please Register</h4>
             <form onSubmit={handelSubmit}>
+                <input className='w-50 mb-4 rounded p-2' type='text' name='name' id='name' placeholder='Your Name' required/>
+                <br />
                 <input className='w-50 mb-4 rounded p-2' onClick={handelEmailChange} type='email' name='email' id='email' placeholder='Enter Your Email' required/>
                 <br />
                 <input className='w-50 mb-4 rounded p-2' onBlur={handelPasswordBlur} type="password" name="password" id="password" placeholder='Enter your Password' required/>

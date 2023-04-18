@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from "firebase/auth";
 import app from '../../firebase/firebase.config';
 import { Link } from 'react-router-dom';
 
@@ -22,17 +22,16 @@ const Register = () => {
         console.log(email,password)
 
         //validate
-        if(!/(?=.* [A-Z].)/.test(password)){
-            setError('please add the at least one uppercase');
+        if(!/(?=.*[A-Z].*[A-Z])/.test(password)){
+            setError('please add at least two uppercase');
             return;
         }
-        else if(!/(?=.* [0-9].*[0-9])/.test(password)){
-            setError('please add the at least two Number');
+        else if(!/(?=.*[!@#$&*])/.test(password)){
+            setError('Please add a special character');
             return;
         }
-
-        else if(password.length<6){
-            setError('Please add at least 6 charecters in your password');
+        else if(password.length < 6){
+            setError('Password must be 6 characters long');
             return;
         }
 
@@ -44,7 +43,8 @@ const Register = () => {
             console.log(loggedUser)
             setError('')
             event.target.reset();
-            setSuccess('User has been created successfully')
+            setSuccess('User has been created successfully');
+            sendVerificationEmail(result.user);
         })
         .catch(error =>{
             console.error(error.message)
@@ -61,6 +61,13 @@ const Register = () => {
         // console.log(event.target.value)
     }
 
+    const sendVerificationEmail = (user) => {
+        sendEmailVerification(user)
+        .then(result => {
+            console.log(result);
+            alert('Please verify your email address');
+        })
+    }
 
     return (
         <div className='w-50 mx-auto'>

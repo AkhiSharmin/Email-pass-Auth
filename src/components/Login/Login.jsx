@@ -37,6 +37,10 @@ const Login = () => {
         signInWithEmailAndPassword(auth, email, password)
         .then(result => {
             const loggedUser = result.user;
+            console.log(loggedUser);
+            if(!loggedUser.emailVerified){
+
+            }
             setSuccess('User login Successful');
             setError('')
         })
@@ -64,6 +68,8 @@ const Login = () => {
             </div>
             <button type="submit" className="btn btn-primary">Submit</button>
       </form>
+      <p><small>Forget Password? Please 
+        <button className='btn btn-link'>Reset Password</button></small></p>
       <p><small>New to Website? Please <Link to='/register'>Register</Link></small></p>
       <p className='text-danger'>{error}</p>
       <p className='text-success'>{success}</p>
